@@ -1,0 +1,114 @@
+@model IndexView
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Stasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" id="wpNavBar">
+        <a class="navbar-brand nav-title" href="/">@Model.Wedders</a>
+        <button onclick="menuClick()" class="navbar-toggler" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guestbook/new">Add to Guestbook</a>
+                </li>
+                @if(ViewBag.LoggedIn != null)
+                {
+                    <li class="nav-item">
+                        <a href="/guest" class="nav-link">My Entries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/guest/logout" class="nav-link">Log Out</a>
+                    </li>
+                }
+                else 
+                {
+                    <li class="nav-item">
+                        <a href="/guest/login" class="nav-link">Log In</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <h1 class="text-center col-md-8 offset-md-2 col-lg-6 offset-lg-3">Thanks for the Memories</h1>
+        @{ int imageCount = 0; }
+        @foreach(GuestBookEntry entry in Model.AllEntries)
+        {
+            <div class="d-flex align-items-center gap justify-content-center justify-content-md-even flex-wrap card-bg-light col-12 col-md-8 offset-md-2 col-lg-10 offset-lg-1">
+                @if(entry.Message != null)
+                {
+                <div class="col-12 guestbook-message">
+                    <p>
+                    "@entry.Message"
+                    </p>
+                    
+                    <span>- @entry.Guest.Name</span>
+                </div>
+                }
+                @foreach(Media upload in entry.Media)
+                {                    
+                    @if(upload.Type == "Image")
+                    {
+                        if(imageCount < 5) {
+                            <img data-target="gallery" onclick="selectMedia(this)" class="gallery-item" src="@upload.Url" alt="Guestbook Entry Image">
+                        } else {
+                            <img data-target="gallery" onclick="selectMedia(this)" class="gallery-item lazy" data-src="@upload.Url" alt="Guestbook Entry Image">
+                        }
+                        imageCount++;
+                    }
+                    else 
+                    {
+                        <div data-target="gallery" onclick="selectMedia(this)" class="gallery-item lazy d-flex align-items-center">
+                            <video src="@upload.Url" type="@upload.Extension" loop controls></video>
+                        </div>
+                    }
+                }
+            </div>
+        }
+        <partial name="PageTurnPartial" model="Model.PageTurn"/>
+    </main>
+    <div id="gallery" class="modal fade" tabindex="-1">
+        <div id="gallery-dialog" class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div id="gallery-carousel" class="modal-body">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="tearDown()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button class="carousel-control carousel-click" id="carousel-previous" onclick="nextMedia()">
+                        <span class="carousel-control-prev-icon carousel-click"></span>
+                    </button>
+                    <div id="modal-media-home" class="d-flex flex-column justify-content-center align-items-center">
+                        <img class="modal-carousel-item carousel-click">
+                    </div>
+                    <button class="carousel-control carousel-click" id="carousel-next" onclick="prevMedia()">
+                        <span class="carousel-control-next-icon carousel-click"></span>
+                    </button> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="SocialsPartial"/>
+    <script src="~/js/navBar.js"></script>
+    <script src="~/js/gallery.js"></script>
+    <script src="~/js/lazyLoad.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+@model LoginPageView
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Stasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" id="wpNavBar">
+        <a class="navbar-brand nav-title" href="/">@Model.Wedders</a>
+        <button onclick="menuClick()" class="navbar-toggler" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guestbook/new">Add to Guestbook</a>
+                </li>
+                @if(ViewBag.LoggedIn != null)
+                {
+                    <li class="nav-item">
+                        <a href="/guest" class="nav-link">My Entries</a>
+                    </li>
+                }
+                else 
+                {
+                    <li class="nav-item">
+                        <a href="/guest/login" class="nav-link">Log In</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <div class="card-bg-light col-md-8 offset-md-2 mb-3">
+            <h3 class="text-center">Log In</h3>
+            <form class="col-md-8 offset-md-2" asp-action="Login" asp-controller="Guest" method="POST">
+                <div class="form-group row mb-3">
+                    <label asp-for="Guest.Email" class="col-4">Email: </label>
+                    <div class="col-8">
+                        <span class="col-12" asp-validation-for="Guest.Email"></span>
+                        <input type="text" asp-for="Guest.Email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label asp-for="Guest.Password" class="col-4">Password: </label>
+                    <div class="col-8">
+                        <span class="col-12" asp-validation-for="Guest.Password"></span>
+                        <input type="password" asp-for="Guest.Password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <div class="col-4 offset-4">
+                        <input type="submit" value="Log In" class="btn btn-primary col-12">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+    <partial name="SocialsPartial"/>
+    <script src="~/js/navBar.js"></script>
+</body>
+</html>
